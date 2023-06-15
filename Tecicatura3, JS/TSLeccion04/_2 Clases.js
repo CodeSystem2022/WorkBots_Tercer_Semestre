@@ -113,3 +113,56 @@ console.log(persona2);
 let empleado1 = new Empleado('Leo','Ferro', 'Sistemas');
 console.log(empleado1);
 console.log(empleado1.nombreCompleto());
+//----------------------------------------------------------------
+
+// Metodo toString
+
+//Object.prototype.toString; Esta en la manera de acceder a atrbutos y metodos de manera dinamica
+console.log(empleado1.toString());
+console.log(persona1.toString());
+
+//----------------------------------------------------------------
+
+// Metodo Static
+
+//persona1.saludar(); No se utiliza desde el objeto
+Persona.saludar();
+Persona.saludar2(persona1);
+
+
+Empleado.saludar();
+Empleado.saludar2(empleado1);
+
+//console.log(persona1.ContadorObjetosPersonas);
+
+// Estaticos funcionan con las Clases tanto Clase Padre como Clase Hija
+console.log(Persona.contadorPersonas);
+console.log(Empleado.contadorPersonas);
+
+// Los (No estaticos) funcionan con los objetos o variables de la clases 
+console.log(persona1.email);
+console.log(empleado1.email);
+
+// Nos muestra el id
+console.log(persona1.toString());
+console.log(persona2.toString());
+console.log(empleado1.toString());
+console.log(Persona.contadorPersonas);
+
+// Nueva Intancia con su id
+let persona3 = new Persona('Carla', 'Pertosi');
+console.log(persona3.toString());
+console.log(Persona.contadorPersonas);
+
+// Porque tiene get no es necesario los parentesis  
+console.log(Persona.MAX_OBJ);
+// Persona.MAX_OBJ = 10; No se puede midificar, ni alterar
+console.log(Persona.MAX_OBJ);
+
+// Creamos un limitante de (5) objetos que se pueden craer en la clase Padre
+
+let persona4 = new Persona('Franco', 'Dias');
+console.log(persona4.toString());
+
+let persona5 = new Persona('Liliana', 'Paz');
+console.log(persona5.toString());
