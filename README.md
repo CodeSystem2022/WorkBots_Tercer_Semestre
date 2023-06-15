@@ -1,5 +1,5 @@
-![image](https://github.com/CodeSystem2022/WorkBots_Tercer_Semestre/assets/112594803/6ba42201-c875-41b8-8d3c-f6d187cb693d)
 
+![Untitled video](https://github.com/CodeSystem2022/WorkBots_Tercer_Semestre/assets/112594803/bc9e46f5-708e-44dc-bf46-e39baf338ff2)
 
 
          INTEGRANTES:
