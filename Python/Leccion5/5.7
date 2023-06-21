@@ -1,0 +1,30 @@
+# Alumno: Manrique Cristian
+# Workbots
+# Laboratorio III
+
+#5.7 Actualizar o modificar varios registros
+
+import psycopg2 
+
+conexion = psycopg2.connect(user='cmanrique',password='Cata1425',host='127.0.0.1', port='5432', database='test_bd'
+)
+
+try:
+    with conexion:
+        with conexion.cursor() as cursor:
+            sentencia = 'UPDATE persona SET nombre=%s, apellido=%s ,email=%s WHERE id_persona=%s'
+            valores= ()
+ 
+           ('Juan ','Perez','jperez@mail.com',4)
+           ('Romina','Ayala','ayalar@mail.com',5))_
+            # Es una tupla de tuplas
+        
+            #conexion.commit() esto se utiliza para guardar los cambios en la base de datos
+            cursor.executemany(sentencia,valores)#De esta manera ejecutamos la sentencia
+            registros_actualizado = cursor.rowcount_# Recuperamos todos los registros que seran una lista
+            prin(f'Los registros actualizados son:{ registros_actualizado}')
+except Exception as e:
+print(f'Ocurrio un error: {e}')
+finally:
+
+conexion.close()
