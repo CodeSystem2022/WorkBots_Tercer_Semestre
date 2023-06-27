@@ -1,0 +1,210 @@
+import psycopg2
+
+# Función para establecer la conexión a la base de datos
+def establecer_conexion():
+    try:
+        conexion = psycopg2.connect(
+            host="localhost",
+            database="nombre_basedatos",
+            user="nombre_usuario",
+            password="contraseña"
+        )
+        print("Conexión establecida correctamente")
+        return conexion
+    except (Exception, psycopg2.Error) as error:
+        print("Error al conectar a la base de datos:", error)
+
+# Función para crear las tablas en la base de datos
+def crear_tablas():
+    conexion = establecer_conexion()
+    if conexion is not None:
+        try:
+            cursor = conexion.cursor()
+
+            # Crear tabla de productos
+            crear_tabla_productos = """
+            CREATE TABLE IF NOT EXISTS productos (
+                id SERIAL PRIMARY KEY,
+                descripcion VARCHAR(100) NOT NULL,
+                precio NUMERIC(10, 2) NOT NULL
+            )
+            """
+            cursor.execute(crear_tabla_productos)
+            conexion.commit()
+
+            # Crear tabla de clientes
+            crear_tabla_clientes = """
+            CREATE TABLE IF NOT EXISTS clientes (
+                id SERIAL PRIMARY KEY,
+                nombre VARCHAR(100) NOT NULL
+            )
+            """
+            cursor.execute(crear_tabla_clientes)
+            conexion.commit()
+
+            # Crear tabla de ventas
+            crear_tabla_ventas = """
+            CREATE TABLE IF NOT EXISTS ventas (
+                id SERIAL PRIMARY KEY,
+                fecha TIMESTAMP DEFAULT NOW(),
+                id_cliente INTEGER REFERENCES clientes (id),
+                id_producto INTEGER REFERENCES productos (id),
+                cantidad NUMERIC(10, 2) NOT NULL
+            )
+            """
+            cursor.execute(crear_tabla_ventas)
+            conexion.commit()
+
+            cursor.close()
+            print("Tablas creadas correctamente")
+        except (Exception, psycopg2.Error) as error:
+            print("Error al crear las tablas:", error)
+        finally:
+            if conexion is not None:
+                conexion.close()
+                print("Conexión cerrada")
+
+# Función para insertar un producto en la base de datos
+def insertar_producto(descripcion, precio):
+    conexion = establecer_conexion()
+    if conexion is not None:
+        try:
+            cursor = conexion.cursor()
+
+            insertar_producto = """
+            INSERT INTO productos (descripcion, precio)
+            VALUES (%s, %s)
+            """
+            cursor.execute(insertar_producto, (descripcion, precio))
+            conexion.commit()
+
+            cursor.close()
+            print("Producto insertado correctamente")
+        except (Exception, psycopg2.Error) as error:
+            print("Error al insertar el producto:", error)
+        finally:
+            if conexion is not None:
+                conexion.close()
+                print("Conexión cerrada")
+
+# Función para insertar un cliente en la base de datos
+def insertar_cliente(nombre):
+    conexion = establecer_conexion()
+    if conexion is not None:
+        try:
+            cursor = conexion.cursor()
+
+            insertar_cliente = """
+            INSERT INTO clientes (nombre)
+            VALUES (%s)
+            """
+            cursor.execute(insertar_cliente, (nombre,))
+            conexion.commit()
+
+            cursor.close()
+            print("Cliente insertado correctamente")
+        except (Exception, psycopg2.Error) as error:
+            print("Error al insertar el cliente:", error)
+        finally:
+            if conexion is not None:
+                conexion.close()
+                print("Conexión cerrada")
+
+# Función para insertar una venta en la base de datos
+def insertar_venta(id_cliente, id_producto, cantidad):
+    conexion = establecer_conexion()
+    if conexion is not None:
+        try:
+            cursor = conexion.cursor()
+
+            insertar_venta = """
+            INSERT INTO ventas (id_cliente, id_producto, cantidad)
+            VALUES (%s, %s, %s)
+            """
+            cursor.execute(insertar_venta, (id_cliente, id_producto, cantidad))
+            conexion.commit()
+
+            cursor.close()
+            print("Venta registrada correctamente")
+        except (Exception, psycopg2.Error) as error:
+            print("Error al registrar la venta:", error)
+        finally:
+            if conexion is not None:
+                conexion.close()
+                print("Conexión cerrada")
+
+# Función para agregar un producto al carrito de compras
+def agregar_producto(productos):
+    descripcion = input("Ingrese la descripción del producto: ")
+    precio = float(input("Ingrese el precio del producto: "))
+    producto = {
+        "descripcion": descripcion,
+        "precio": precio
+    }
+    productos.append(producto)
+    insertar_producto(descripcion, precio)
+    print("Producto agregado correctamente")
+
+# Función para mostrar el ticket de venta
+def mostrar_ticket(cliente, productos):
+    print("******************************")
+    print("         TICKET DE VENTA       ")
+    print("******************************")
+    print(f"{'SUPERMERCADO WORKBOTS':^30s}")
+    print("------------------------------")
+    print(f"Cliente: {cliente}")
+    print("------------------------------")
+    print("Descripción\t\tPrecio\tCantidad\tSubtotal")
+    print("------------------------------")
+    total = 0
+    for producto in productos:
+        subtotal = producto["precio"] * producto["cantidad"]
+        total += subtotal
+        print(f"{producto['descripcion']}\t{producto['precio']}\t{producto['cantidad']}\t\t{subtotal}")
+    print("------------------------------")
+    print(f"TOTAL:\t\t\t\t\t{total}")
+    print("******************************")
+
+# Función principal del programa
+def main():
+    crear_tablas()
+
+    while True:
+        nombre = input("***¡¡Bienvenidos al supermercado WorkBots!!***\nPor favor, escriba su nombre: ")
+        productos = []
+
+        while True:
+            print("\n")
+            print("-" * 45)
+            print("|{:<15s}|{:>10s}|{:>10s}|".format("Descripción", "Precio", "Cantidad"))
+            print("-" * 45)
+
+            for producto in productos:
+                print("|{:<15s}|{:>10.2f}|{:>10.2f}|".format(producto["descripcion"], producto["precio"], producto["cantidad"]))
+
+            print("-" * 45)
+            
+            eleccion = input("\nElija una opción:\n1. Agregar producto\n2. Mostrar ticket y terminar venta\n3. Salir\nSeleccione: ")
+
+            if eleccion == "1":
+                agregar_producto(productos)
+            elif eleccion == "2":
+                if len(productos) > 0:
+                    mostrar_ticket(nombre, productos)
+                    for producto in productos:
+                        insertar_venta(1, producto["id"], producto["cantidad"])  # Suponiendo que el cliente siempre tiene ID 1
+                    break
+                else:
+                    print("No hay productos agregados. Por favor, agregue al menos un producto.")
+            elif eleccion == "3":
+                break
+            else:
+                print("Opción inválida")
+
+        respuesta = input("¿Nuevo cliente? ¿Desea continuar?\n1. Sí\n2. No\nSeleccione: ")
+        if respuesta == "2":
+            print("Gracias por visitar el supermercado WorkBots!")
+            break
+
+if __name__ == "__main__":
+    main()
