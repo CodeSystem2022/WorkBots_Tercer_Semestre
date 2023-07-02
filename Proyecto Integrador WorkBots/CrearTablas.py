@@ -64,3 +64,8 @@ def crear_tablas():
             if conexion is not None:
                 conexion.close()
                 print("Conexión cerrada")
+def principal():
+    crear_tablas()
+
+if __name__ == "__main__":
+    principal()
