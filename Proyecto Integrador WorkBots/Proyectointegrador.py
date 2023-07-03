@@ -306,31 +306,35 @@ def main():
             elif eleccion == "3":
                 quitarProducto(productos)
             elif eleccion == "4":
-                eleccionPago = input("Por favor, seleccione el método de pago:\n"
+                if len(productos)!=0 :
+                        eleccionPago = input("Por favor, seleccione el método de pago:\n"
                                      "1. Efectivo\n"
                                      "2. Tarjeta débito\n"
                                      "3. Tarjeta crédito\n"
                                      "4. Volver al menú anterior\n"
                                      "5. Salir\n"
                                      "Seleccione: ")
-                if eleccionPago == "1":
-                    mostrarTicketEfe(productos)
-                    print("Gracias por su compra, {}!!".format(nombre))
-                    break
-                elif eleccionPago == "2":
-                    mostrarTicketDebit(productos)
-                    print("Gracias por su compra, {}!!".format(nombre))
-                    break
-                elif eleccionPago == "3":
-                    mostrarTicketCred(productos)
-                    print("Gracias por su compra, {}!!".format(nombre))
-                    break
-                elif eleccionPago == "4":
-                    print("Volviendo...")
-                elif eleccionPago == "5":
-                    break
+                        if eleccionPago == "1":
+                            mostrarTicketEfe(productos)
+                            print("Gracias por su compra, {}!!".format(nombre))
+                            break
+                        elif eleccionPago == "2":
+                            mostrarTicketDebit(productos)
+                            print("Gracias por su compra, {}!!".format(nombre))
+                            break
+                        elif eleccionPago == "3":
+                            mostrarTicketCred(productos)
+                            print("Gracias por su compra, {}!!".format(nombre))
+                            break
+                        elif eleccionPago == "4":
+                            print("Volviendo...")
+                        elif eleccionPago == "5":
+                            break
+                        else:
+                            print("Opción no válida!")
                 else:
-                    print("Opción no válida!")
+                    print('Debe agregar al menos un articulo!')
+
             elif eleccion == "5":
                 break
             else:
